@@ -1,0 +1,8 @@
+Version "personnelle"
+Les traductions en DUR dans les fichiers ne sont pas LA solution
+C'est une version de travail
+Les versions de traduction fr_FR.ts et fr_FR.qm sont incomplètes
+Les modifications apportées sur les modules ont pour but de faire face aux modifications de la structure du site https://wow.curseforge.com/addons
+Cette version est incomplète car le problème de la mise à jour catalogue semble être résolu MAIS ...
+La construction des chemins de téléchargement de certains addons ne fonctionne plus après les modifications du site web
+Dans la mesure du possible, j'essayerai d'apporter les résultats positifs sur la branche principale du projet
