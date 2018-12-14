@@ -1,6 +1,6 @@
 from PyQt5 import Qt
 from bs4 import BeautifulSoup
-import urllib.parse
+import urllib.request
 from urllib.request import build_opener, HTTPCookieProcessor, HTTPError
 from http import cookiejar
 import zipfile
@@ -66,7 +66,7 @@ def OpenWithRetry(url):
             return response
 
         except Exception as e:
-            print("Could not open '{}', retrying... ({})".format(url, count))
+            print("Ne peut ouvrir '{}', réessayé... ({})".format(url, count))
 
             count = count + 1
             time.sleep(1)
@@ -84,9 +84,9 @@ class CheckDlg(Qt.QDialog):
         settings = Qt.QSettings()
         layout = Qt.QVBoxLayout(self)
         if len(addons) == 1:
-            layout.addWidget(Qt.QLabel(self.tr("Verifying if the addon needs an update...")))
+            layout.addWidget(Qt.QLabel(self.tr("Vérifiez si cet Addon nécessite une mise à jour...")))
         else:
-            layout.addWidget(Qt.QLabel(self.tr("Verifying which addon needs an update...")))
+            layout.addWidget(Qt.QLabel(self.tr("Vérifiez si ces Addons nécessitent une mise à jour...")))
         self.progress = Qt.QProgressBar(self)
         self.progress.setRange(0, len(addons))
         self.progress.setValue(0)
@@ -232,9 +232,9 @@ class UpdateDlg(Qt.QDialog):
         settings = Qt.QSettings()
         layout = Qt.QVBoxLayout(self)
         if len(addons) == 1:
-            layout.addWidget(Qt.QLabel(self.tr("Updating the addon...")))
+            layout.addWidget(Qt.QLabel(self.tr("Mise à jour Addon...")))
         else:
-            layout.addWidget(Qt.QLabel(self.tr("Updating the addons...")))
+            layout.addWidget(Qt.QLabel(self.tr("Mise à jour des addons...")))
         self.progress = Qt.QProgressBar(self)
         self.progress.setRange(0, len(addons))
         self.progress.setValue(0)
@@ -303,11 +303,11 @@ class UpdateWorker(Qt.QThread):
                     r=re.compile(".*\.toc$")
                     r2=re.compile("[\\/]")
                     tocs=filter(r.match,z.namelist())
-                    for nome in list(tocs):
-                        t=r2.split(nome)
+                    for nom in list(tocs):
+                        t=r2.split(nom)
                         if len(t) == 2:
                             break
-                    toc="{}/Interface/AddOns/{}".format(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT),nome)
+                    toc="{}/Interface/AddOns/{}".format(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT),nom)
                     z.extractall(dest)
             return True, toc
         except Exception as e:
@@ -332,7 +332,7 @@ class UpdateCatalogDlg(Qt.QDialog):
     def __init__(self, parent):
         super(UpdateCatalogDlg, self).__init__(parent)
         layout = Qt.QVBoxLayout(self)
-        layout.addWidget(Qt.QLabel(self.tr("Updating list of available Addons...")))
+        layout.addWidget(Qt.QLabel(self.tr("Mise à jour de la liste des Addons disponible ...")))
         self.progress = Qt.QProgressBar(self)
         self.progress.setRange(0, 0)
         self.progress.setValue(0)
@@ -354,7 +354,7 @@ class UpdateCatalogDlg(Qt.QDialog):
     def onProgress(self, foundAddons):
         value = self.progress.value() + 1
         self.progress.setValue(value)
-        self.progress.setFormat(self.tr("%p% - found Addons: {}").format(foundAddons))
+        self.progress.setFormat(self.tr("%p% - Addons trouvés : {}").format(foundAddons))
 
     @Qt.pyqtSlot(Qt.QVariant)
     def onUpdateCatalogFinished(self, addons):
@@ -379,32 +379,40 @@ class UpdateCatalogWorker(Qt.QThread):
     def retrievePartialListOfAddons(self, page):
         response = OpenWithRetry("http://www.curseforge.com/wow/addons?page={}".format(page))
         soup = BeautifulSoup(response.read(), "lxml")
+        str = "/download"
         # Curse returns a soft-500
-        if soup.find_all("h2", string="Error"):
-            print("Server-side error while getting addon list.")
+        if soup.find_all("h2", string="Erreur"):
+            print("Erreur coté serveur pendant la création de la liste des addons.")
 
         lastpage = 1
         if page == 1:
             pager = soup.select("ul.b-pagination-list.paging-list.j-tablesorter-pager.j-listing-pagination li")
             if pager:
                 lastpage = int(pager[len(pager) - 2].contents[0].contents[0])
-
+                print("Nbr page web : ", lastpage)
         projects = soup.select("li.project-list-item")  # li .title h4 a")
         self.addonsMutex.lock()
+
         for project in projects:
             links=project.select("a.button--download")
             texts=project.select("a h2")
             for text in texts:
-                nome=text.string.replace('\\r','').replace('\\n','').strip()
+                nom=text.string.replace('\\r','').replace('\\n','').strip()
+                print("nom addon : ",nom)
                 break
             for link in links:
-                href=link.get("href").replace("/download",'')
-            self.addons.append([nome, "http://www.curseforge.com{}".format(href)])
+                if str in link:
+                	href=link.get("href").replace("/download",'')
+                else:
+                	href=link.get("href")
+
+                self.addons.append([nom, "http://www.curseforge.com{}".format(href)])
+                # print("href : ",href)
+
         self.progress.emit(len(self.addons))
         self.addonsMutex.unlock()
-
         self.sem.release()
-
+        # print("Nbr page web sortie boucle : ", lastpage)
         return lastpage
 
     def retrieveListOfAddons(self):

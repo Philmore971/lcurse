@@ -34,17 +34,17 @@ class Grid(Qt.QTableWidget):
         self.menu = Qt.QMenu(self)
         row=self.currentRow()
         name=self.item(row,0).text()
-        self.menu.addAction(self.tr("Context menu for {}").format(name))
-        removefromlistAction = Qt.QAction(self.tr("Remove from list"),self)
-        removefromlistAction.setStatusTip(self.tr("Leave all files unaltered, useful for subaddons"))
+        self.menu.addAction(self.tr("Menu contextuel de {}").format(name))
+        removefromlistAction = Qt.QAction(self.tr("Supprimer de la liste"),self)
+        removefromlistAction.setStatusTip(self.tr("Laissez tous les fichiers inchangés, utile pour les sous-addons"))
         removefromlistAction.triggered.connect(self.removeFromList)
         self.menu.addAction(removefromlistAction)
-        actionUpdate = Qt.QAction(self.tr("Update addon"), self)
-        actionUpdate.setStatusTip(self.tr("Update currently selected addons if needed"))
+        actionUpdate = Qt.QAction(self.tr("Mise à jour Addon"), self)
+        actionUpdate.setStatusTip(self.tr("Mise à jour des Addons sélectionnés si nécessaire"))
         actionUpdate.triggered.connect(self.parent.updateAddon)        
         self.menu.addAction(actionUpdate)
-        actionForceUpdate = Qt.QAction(self.tr("Force Update addon"), self)
-        actionForceUpdate.setStatusTip(self.tr("Unconditionally update currently selected addons"))
+        actionForceUpdate = Qt.QAction(self.tr("Forcer la mise à jour Addon"), self)
+        actionForceUpdate.setStatusTip(self.tr("Mise à jour forcée des Addons sélectionnés"))
         actionForceUpdate.triggered.connect(self.parent.forceUpdateAddon)        
         self.menu.addAction(actionForceUpdate)
         self.menu.popup(Qt.QCursor.pos())
@@ -83,7 +83,7 @@ class MainWidget(Qt.QMainWindow):
             return str(int(v[0])*10000 + int(v[1])*100)
         except Exception as e:
             return settings.value(defines.WOW_TOC_KEY,defines.TOC)
-            print("Error messages",e)
+            print("Messages d'erreur",e)
                 
     def addWidgets(self):
         self.mainWidget = Qt.QWidget(self)
@@ -91,31 +91,31 @@ class MainWidget(Qt.QMainWindow):
 
         menubar = self.menuBar()
 
-        actionLoad = Qt.QAction(self.tr("Load Addons"), self)
+        actionLoad = Qt.QAction(self.tr("Charger les Addons"), self)
         actionLoad.setShortcut("Ctrl+L")
-        actionLoad.setStatusTip(self.tr("Re/Load your addons configuration"))
+        actionLoad.setStatusTip(self.tr("Re/Charger votre configuration des addons"))
         actionLoad.triggered.connect(self.loadAddons)
 
-        actionSave = Qt.QAction(self.tr("Save Addons"), self)
+        actionSave = Qt.QAction(self.tr("Sauver les Addons"), self)
         actionSave.setShortcut("Ctrl+S")
-        actionSave.setStatusTip(self.tr("Save your addons configuration"))
+        actionSave.setStatusTip(self.tr("Sauver votre configuration des addons"))
         actionSave.triggered.connect(self.saveAddons)
 
-        actionImport = Qt.QAction(self.tr("Import Addons"), self)
-        actionImport.setStatusTip(self.tr("Import Addons from WoW installation"))
+        actionImport = Qt.QAction(self.tr("Importer les Addons déjà présent"), self)
+        actionImport.setStatusTip(self.tr("Importer les Addons déjà présent à partir du dossier d'installation de Wow"))
         actionImport.triggered.connect(self.importAddons)
 
-        actionPrefs = Qt.QAction(self.tr("Preferences"), self)
+        actionPrefs = Qt.QAction(self.tr("Préférences"), self)
         actionPrefs.setShortcut("Ctrl+P")
-        actionPrefs.setStatusTip(self.tr("Change preferences like wow install folder"))
+        actionPrefs.setStatusTip(self.tr("Modifier les préférences, dossier d'installation Wow par exemple"))
         actionPrefs.triggered.connect(self.openPreferences)
 
-        actionExit = Qt.QAction(self.tr("Exit"), self)
+        actionExit = Qt.QAction(self.tr("Terminer"), self)
         actionExit.setShortcuts(Qt.QKeySequence.Quit)
-        actionExit.setStatusTip(self.tr("Exit application"))
+        actionExit.setStatusTip(self.tr("Sortir de l'application"))
         actionExit.triggered.connect(self.close)
 
-        menuFile = menubar.addMenu(self.tr("General"))
+        menuFile = menubar.addMenu(self.tr("Général"))
         menuFile.addAction(actionLoad)
         menuFile.addAction(actionSave)
         menuFile.addAction(actionImport)
@@ -128,37 +128,37 @@ class MainWidget(Qt.QMainWindow):
         self.addAction(actionPrefs)
         self.addAction(actionExit)
 
-        actionCheckAll = Qt.QAction(self.tr("Check all addons"), self)
+        actionCheckAll = Qt.QAction(self.tr("Vérifier les Addons"), self)
         actionCheckAll.setShortcut('Ctrl+Shift+A')
-        actionCheckAll.setStatusTip(self.tr("Check all addons for new version"))
+        actionCheckAll.setStatusTip(self.tr("Vérifier les Addons sélectionnés pour nouvelle version"))
         actionCheckAll.triggered.connect(self.checkAddonsForUpdate)
 
-        actionCheck = Qt.QAction(self.tr("Check addon"), self)
+        actionCheck = Qt.QAction(self.tr("Vérifier Addon"), self)
         actionCheck.setShortcut('Ctrl+A')
-        actionCheck.setStatusTip(self.tr("Check currently selected addon for new version"))
+        actionCheck.setStatusTip(self.tr("Vérifier Addon sélectionné pour nouvelle version"))
         actionCheck.triggered.connect(self.checkAddonForUpdate)
 
-        actionUpdateAll = Qt.QAction(self.tr("Update all addons"), self)
+        actionUpdateAll = Qt.QAction(self.tr("Mise à jour de tous les Addons"), self)
         actionUpdateAll.setShortcut("Ctrl+Shift+U")
-        actionUpdateAll.setStatusTip(self.tr("Update all addons which need an update"))
+        actionUpdateAll.setStatusTip(self.tr("Mise à jour de tous les Addons, si nécessaire"))
         actionUpdateAll.triggered.connect(self.updateAddons)
 
-        actionUpdate = Qt.QAction(self.tr("Update addon"), self)
+        actionUpdate = Qt.QAction(self.tr("Mise à jour Addon"), self)
         actionUpdate.setShortcut("Ctrl+U")
-        actionUpdate.setStatusTip(self.tr("Update currently selected addons if needed"))
+        actionUpdate.setStatusTip(self.tr("Mise à jour des Addons sélectionné, si nécessaire"))
         actionUpdate.triggered.connect(self.updateAddon)
 
-        actionAdd = Qt.QAction(self.tr("Add addon"), self)
-        actionAdd.setStatusTip(self.tr("Add a new addon"))
+        actionAdd = Qt.QAction(self.tr("Ajouter Addon"), self)
+        actionAdd.setStatusTip(self.tr("Ajouter nouvel Addon"))
         actionAdd.triggered.connect(self.addAddon)
 
-        actionRemove = Qt.QAction(self.tr("Remove addon"), self)
-        actionRemove.setStatusTip(self.tr("Remove currently selected addon"))
+        actionRemove = Qt.QAction(self.tr("Supprimer Addon"), self)
+        actionRemove.setStatusTip(self.tr("Supprimer Addon sélectionné"))
         actionRemove.triggered.connect(self.removeAddon)
 
-        actionForceUpdate = Qt.QAction(self.tr("Force update addon"), self)
+        actionForceUpdate = Qt.QAction(self.tr("Forcer mise à jour Addon"), self)
         actionForceUpdate.setShortcut("Ctrl+F")
-        actionForceUpdate.setStatusTip(self.tr("Force update of currently selected addon"))
+        actionForceUpdate.setStatusTip(self.tr("Forcer mise à jour Addon sélectionné"))
         actionForceUpdate.triggered.connect(self.forceUpdateAddon)
 
         menuAddons = menubar.addMenu(self.tr("Addons"))
@@ -180,18 +180,18 @@ class MainWidget(Qt.QMainWindow):
         self.addAction(actionUpdate)
         self.addAction(actionForceUpdate)
 
-        actionCatalogUpdate = Qt.QAction(self.tr("Update Catalog"), self)
-        actionCatalogUpdate.setStatusTip(self.tr("Retrieve a list of available addons"))
+        actionCatalogUpdate = Qt.QAction(self.tr("Mise à jour Catalogue"), self)
+        actionCatalogUpdate.setStatusTip(self.tr("Extraire une liste des Addons disponibles"))
         actionCatalogUpdate.triggered.connect(self.updateCatalog)
-        menuCatalog = menubar.addMenu(self.tr("Catalog"))
+        menuCatalog = menubar.addMenu(self.tr("Catalogue"))
         menuCatalog.addAction(actionCatalogUpdate)
-        toolbar = self.addToolBar(self.tr("Catalog"))
+        toolbar = self.addToolBar(self.tr("Catalogue"))
         toolbar.addAction(actionCatalogUpdate)
 
         self.addonList = Grid(self)
 
         self.addonList.setColumnCount(5)
-        self.addonList.setHorizontalHeaderLabels(["Name", "Url", "Version", "Toc", "Allow Beta"])
+        self.addonList.setHorizontalHeaderLabels(["Nom", "Url", "Version", "Toc", "Permettre Béta"])
 
         self.resize(1070, 815)
         screen = Qt.QDesktopWidget().screenGeometry()
@@ -200,7 +200,7 @@ class MainWidget(Qt.QMainWindow):
         self.setWindowTitle('WoW!Curse ' + '(TOC: ' + defines.TOC +')')
 
         box.addWidget(self.addonList)
-        self.statusBar().showMessage(self.tr("Ready"))
+        self.statusBar().showMessage(self.tr("Prêt"))
         self.setCentralWidget(self.mainWidget)
         self.show()
 
@@ -288,7 +288,7 @@ class MainWidget(Qt.QMainWindow):
             if not version:
                 version="n/a"
             if not name:
-                print("not enough informations found for addon  {}\n(version={},name={},toc={})\n".format(toc,version,name,tocversion))
+                print("informations insuffisantes concernant addon  {}\n(version={},name={},toc={})\n".format(toc,version,name,tocversion))
         name = self.removeStupidStuff(name)
         curseId = self.removeStupidStuff(curseId)
         
@@ -434,7 +434,7 @@ class MainWidget(Qt.QMainWindow):
                         captions = soup.select("h2.name")
                         name = captions[0].string
                     except:
-                        print("www.curseforge.com layout has changed.")
+                        print("la strucutre de www.curseforge.com a été modifiée.")
                         pass
                 except HTTPError as e:
                     print(e)
@@ -453,10 +453,10 @@ class MainWidget(Qt.QMainWindow):
             self.addonList.setItem(newrow, 4, allowBetaItem)
 
     def updateDatabaseFormat(self,oldVersion):
-        print("Db version is ", oldVersion, " vs ", defines.LCURSE_DBVERSION)
+        print("Version de la Base ", oldVersion, " versus ", defines.LCURSE_DBVERSION)
         if oldVersion >= defines.LCURSE_DBVERSION:
             return {}
-        print("Database update!")
+        print("Mise à jour Base de Données !")
         settings = Qt.QSettings()
         parent = "{}/Interface/AddOns".format(str(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT)))
         contents = os.listdir(parent)
@@ -477,8 +477,8 @@ class MainWidget(Qt.QMainWindow):
     def removeAddon(self):
         row = self.addonList.currentRow()
         print("Current Row: {0:d}".format(row))
-        answer = Qt.QMessageBox.question(self, self.tr("Remove selected addon"),
-                                         str(self.tr("Do you really want to remove the following addon?\n{}")).format(
+        answer = Qt.QMessageBox.question(self, self.tr("Supprimer addon sélectionné"),
+                                         str(self.tr("Souhaitez-vous vraiment supprimer cet addon ?\n{}")).format(
                                              str(self.addonList.item(row, 0).text())),
                                          Qt.QMessageBox.Yes, Qt.QMessageBox.No)
         if answer != Qt.QMessageBox.Yes:
@@ -504,8 +504,8 @@ class MainWidget(Qt.QMainWindow):
         self.addonList.removeRow(row)
 
         if not deleted:
-            Qt.QMessageBox.question(self, "No addons removed",
-                                    str(self.tr("No addons matching \"{}\" found.\nThe addon might already be removed, or could be going under a different name.\nManual deletion may be required.")).format(addonName),
+            Qt.QMessageBox.question(self, "Aucuns addons supprimés",
+                                    str(self.tr("Aucun addon trouvé qui correspond à \"{}\".\nAddon peut-être déjà supprimé, ou sous un autre nom.\nSuppression manuelle peut être requise.")).format(addonName),
                                     Qt.QMessageBox.Ok)
         else:
             potential = False
@@ -526,8 +526,8 @@ class MainWidget(Qt.QMainWindow):
                             break
             if potential:
                 to_delete = '\n'.join(potential_deletions)
-                removal = Qt.QMessageBox.question(self, "Potential deletion candidates found",
-                                        str(self.tr("Remove the following addons as well?\n{}")).format(to_delete),
+                removal = Qt.QMessageBox.question(self, "Candidats à la suppression trouvés",
+                                        str(self.tr("Effacer ces addons ?\n{}")).format(to_delete),
                                         Qt.QMessageBox.Yes, Qt.QMessageBox.No)
                 if removal == Qt.QMessageBox.Yes:
                     for p in potential_deletions:
@@ -643,7 +643,7 @@ class MainWidget(Qt.QMainWindow):
             self.saveAddons()
 
     def onUpdateCatalogFinished(self, addons):
-        print("retrieved list of addons: {}".format(len(addons)))
+        print("récupérer la liste des addons: {}".format(len(addons)))
         self.availableAddons = addons
         with open(defines.LCURSE_ADDON_CATALOG, "w") as c:
             json.dump(self.availableAddons, c)
