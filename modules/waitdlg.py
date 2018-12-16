@@ -379,7 +379,7 @@ class UpdateCatalogWorker(Qt.QThread):
     def retrievePartialListOfAddons(self, page):
         response = OpenWithRetry("http://www.curseforge.com/wow/addons?page={}".format(page))
         soup = BeautifulSoup(response.read(), "lxml")
-        str = "/download"
+        # str = "/download"
         # Curse returns a soft-500
         if soup.find_all("h2", string="Erreur"):
             print("Erreur coté serveur pendant la création de la liste des addons.")
@@ -389,30 +389,47 @@ class UpdateCatalogWorker(Qt.QThread):
             pager = soup.select("ul.b-pagination-list.paging-list.j-tablesorter-pager.j-listing-pagination li")
             if pager:
                 lastpage = int(pager[len(pager) - 2].contents[0].contents[0])
-                print("Nbr page web : ", lastpage)
+                # print("Nbr page web : ", lastpage)
         projects = soup.select("li.project-list-item")  # li .title h4 a")
         self.addonsMutex.lock()
+        # fichier = open("/home/philippe/.lcurse/suivi_lien.txt", "a")
 
         for project in projects:
             links=project.select("a.button--download")
             texts=project.select("a h2")
             for text in texts:
                 nom=text.string.replace('\\r','').replace('\\n','').strip()
-                print("nom addon : ",nom)
+                # fichier = open("/home/philippe/.lcurse/suivi_lien.txt", "a")
+                # fichier.write("nom addon : ")
+                # fichier.write(nom)
+                # fichier.write("\n")
+                # print("nom addon : " + nom)
                 break
             for link in links:
-                if str in link:
-                	href=link.get("href").replace("/download",'')
+                # if str in link:
+                # 	href=link.get("href").replace("/download",'')
+                # else:
+                # 	href=link.get("href")
+                if link.get("data-exp-name")=="Tad_Support_Author":
+                    href=link.get("data-normal-href").replace("/download",'')
                 else:
-                	href=link.get("href")
+                    href=link.get("href").replace("/download",'')
+                # href=link.get("href").replace("/download",'')
+            self.addons.append([nom, "http://www.curseforge.com{}".format(href)])
+            # fichier.write("href : ")
+            # fichier.write(href)
+            # fichier.write("\n")
+            # print("href : " + href + "\n")
 
-                self.addons.append([nom, "http://www.curseforge.com{}".format(href)])
-                # print("href : ",href)
-
+        # stringlastpage = str(lastpage)
+        # print("Nbr page web : " + stringlastpage)
+        # fichier.write("Nbr page web : ")
+        # fichier.write(stringlastpage)
+        # fichier.write("\n")
         self.progress.emit(len(self.addons))
         self.addonsMutex.unlock()
         self.sem.release()
-        # print("Nbr page web sortie boucle : ", lastpage)
+        # fichier.close()
         return lastpage
 
     def retrieveListOfAddons(self):
