@@ -1,8 +1,18 @@
 Version "personnelle"
 Les traductions en DUR dans les fichiers ne sont pas LA solution
 C'est une version de travail
-Les versions de traduction fr_FR.ts et fr_FR.qm sont incomplètes
+
+Cette version au 16/12/2018 fonctionne parfaitement
+- mise à jour catalogue résolu
+- mise à jour des addons résolu
+- faire attention au chemin de dépôt des addons qui a changé depuis la version wow 8.1
+-> ... /Program Files (x86)/World of Warcraft/_retail_
+- Déclaration par défaut dans Général -> préférences
+  Treads (fils) simultanés maximum : 50
+  TOC : 80100
+- Traduction complète en français
+
+Les versions de traduction fr_FR.ts et fr_FR.qm sont incomplètes mais fonctionnelles
 Les modifications apportées sur les modules ont pour but de faire face aux modifications de la structure du site https://wow.curseforge.com/addons
-Cette version est incomplète car le problème de la mise à jour catalogue semble être résolu MAIS ...
-La construction des chemins de téléchargement de certains addons ne fonctionne plus après les modifications du site web
+
 Dans la mesure du possible, j'essayerai d'apporter les résultats positifs sur la branche principale du projet
