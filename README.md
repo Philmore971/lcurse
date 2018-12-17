@@ -1,15 +1,20 @@
 lcurse
 ======
 
-Python script to have a "curse" compatible client for linux
+Version tout en français de "lcurse". Utilitaire en Python compatible linux de "curse"
+Branche principale et de référence du projet :
+https://github.com/ephraim/lcurse/
 
+Remarque : Il est possible d'utiliser l'installation par défaut de Python de son système sans créer un environnement "pipenv"
+Dans la fenêtre d'un terminal, utiliser la commande :
+~/lcurse-master/lcurse
 
 lcurse nowadays supports git repositories too.
 As git repos aren't structured the same, you will most probably need to create an link via "ln -s source destination" inside the wow/Interface/Addons folder.
 But at least the update is then done via the usuall lcurse way.
 
 ### Requirements
-* python 3.6
+* python 3.6 ou 3.7
 * pipenv
 * PyQt5
 * bs4
