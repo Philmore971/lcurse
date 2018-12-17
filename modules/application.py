@@ -212,9 +212,9 @@ class MainWidget(Qt.QMainWindow):
             os.mkdir(defines.LCURSE_FOLDER)
         elif not os.path.isdir(defines.LCURSE_FOLDER):
             e = self.tr(
-                "There is an entry \".lcurse\" in your home directory which is neither a folder nor a link to a folder."
-                " Exiting!")
-            Qt.QMessageBox.critical(None, self.tr("lcurse-folder not a folder"), e)
+                "Il y a une entrée  \".lcurse\" dans le répertoire personnel qui n’est ni un dossier ni un lien vers un dossier."
+                " Sortir !")
+            Qt.QMessageBox.critical(None, self.tr("dossier-lcurse n'est pas un dossier"), e)
             print(e)
             raise
 
@@ -302,7 +302,7 @@ class MainWidget(Qt.QMainWindow):
 
     def importAddons(self):
         settings = Qt.QSettings()
-        parent = "{}/Interface/AddOns".format(str(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT)))
+        parent = "{}/_retail_/Interface/AddOns".format(str(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT)))
         contents = os.listdir(parent)
         for item in contents:
             itemDir = "{}/{}".format(parent, item)
@@ -427,7 +427,7 @@ class MainWidget(Qt.QMainWindow):
             url = str(nameOrUrl)
             if "curseforge.com" in url:
                 try:
-                    print("retrieving addon informations")
+                    print("récupération des informations addon")
                     response = opener.open(urlparse(urlquote(url, ':/')).geturl())
                     soup = BeautifulSoup(response.read(), "lxml")
                     try:
@@ -484,7 +484,7 @@ class MainWidget(Qt.QMainWindow):
         if answer != Qt.QMessageBox.Yes:
             return
         settings = Qt.QSettings()
-        parent = "{}/Interface/AddOns".format(str(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT)))
+        parent = "{}/_retail_/Interface/AddOns".format(str(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT)))
         contents = os.listdir(parent)
         addonName =  str(self.addonList.item(row, 0).text())
         deleted = False
@@ -504,8 +504,8 @@ class MainWidget(Qt.QMainWindow):
         self.addonList.removeRow(row)
 
         if not deleted:
-            Qt.QMessageBox.question(self, "Aucuns addons supprimés",
-                                    str(self.tr("Aucun addon trouvé qui correspond à \"{}\".\nAddon peut-être déjà supprimé, ou sous un autre nom.\nSuppression manuelle peut être requise.")).format(addonName),
+            Qt.QMessageBox.question(self, "Aucun addons supprimés",
+                                    str(self.tr("Aucun addons trouvés qui correspondent à \"{}\".\nAddon peut-être déjà supprimé, ou sous un autre nom.\nUne suppression manuelle peut être requise.")).format(addonName),
                                     Qt.QMessageBox.Ok)
         else:
             potential = False
@@ -527,7 +527,7 @@ class MainWidget(Qt.QMainWindow):
             if potential:
                 to_delete = '\n'.join(potential_deletions)
                 removal = Qt.QMessageBox.question(self, "Candidats à la suppression trouvés",
-                                        str(self.tr("Effacer ces addons ?\n{}")).format(to_delete),
+                                        str(self.tr("Supprimez également les addons suivants ?\n{}")).format(to_delete),
                                         Qt.QMessageBox.Yes, Qt.QMessageBox.No)
                 if removal == Qt.QMessageBox.Yes:
                     for p in potential_deletions:
