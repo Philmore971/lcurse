@@ -9,6 +9,12 @@ Remarque : Il est possible d'utiliser l'installation par défaut de Python de so
 Dans la fenêtre d'un terminal, utiliser la commande :
 ~/lcurse-master/lcurse
 
+Étant donné que l'application considère que l'installation par défaut sera dans le répertoire " ~/.wine/drive_c/Program Files (x86)/World of Warcraft/ ", votre installation n’est peut être pas structuré de la même façon, vous devrez probablement créer un lien par « ln -s source destination » entre les deux dossiers wow/Interface/Addons.
+
+Pour exemple dans mon cas personnel, installation wow via Lutris, j'ai créer un lien symbolique vers le dossier d'installation standard de Wow :
+
+ln -s '/home/philmore/Games/battlenet/drive_c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns' '/home/philmore/.wine/drive_c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns'
+
 lcurse nowadays supports git repositories too.
 As git repos aren't structured the same, you will most probably need to create an link via "ln -s source destination" inside the wow/Interface/Addons folder.
 But at least the update is then done via the usuall lcurse way.
