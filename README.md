@@ -1,7 +1,7 @@
 lcurse
 ======
 
-Version tout en français de "lcurse". Utilitaire en Python compatible linux de "curse"
+Version tout en français de "lcurse". Utilitaire en Python compatible linux de "curse".
 Branche principale et de référence du projet :
 https://github.com/ephraim/lcurse/
 
