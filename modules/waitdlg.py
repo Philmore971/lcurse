@@ -303,8 +303,8 @@ class UpdateWorker(Qt.QThread):
                     r=re.compile(".*\.toc$")
                     r2=re.compile("[\\/]")
                     tocs=filter(r.match,z.namelist())
-                    for nom in list(tocs):
-                        t=r2.split(nom)
+                    for nome in list(tocs):
+                        t=r2.split(nome)
                         if len(t) == 2:
                             break
                     toc="{}/_retail_/Interface/AddOns/{}".format(settings.value(defines.WOW_FOLDER_KEY, defines.WOW_FOLDER_DEFAULT),nome)
@@ -379,7 +379,6 @@ class UpdateCatalogWorker(Qt.QThread):
     def retrievePartialListOfAddons(self, page):
         response = OpenWithRetry("http://www.curseforge.com/wow/addons?page={}".format(page))
         soup = BeautifulSoup(response.read(), "lxml")
-        # str = "/download"
         # Curse returns a soft-500
         if soup.find_all("h2", string="Erreur"):
             print("Erreur coté serveur pendant la création de la liste des addons.")
@@ -398,12 +397,7 @@ class UpdateCatalogWorker(Qt.QThread):
             links=project.select("a.button--download")
             texts=project.select("a h2")
             for text in texts:
-                nom=text.string.replace('\\r','').replace('\\n','').strip()
-                # fichier = open("/home/philippe/.lcurse/suivi_lien.txt", "a")
-                # fichier.write("nom addon : ")
-                # fichier.write(nom)
-                # fichier.write("\n")
-                # print("nom addon : " + nom)
+                nome=text.string.replace('\\r','').replace('\\n','').strip()
                 break
             for link in links:
                 # if str in link:
@@ -415,17 +409,8 @@ class UpdateCatalogWorker(Qt.QThread):
                 else:
                     href=link.get("href").replace("/download",'')
                 # href=link.get("href").replace("/download",'')
-            self.addons.append([nom, "http://www.curseforge.com{}".format(href)])
-            # fichier.write("href : ")
-            # fichier.write(href)
-            # fichier.write("\n")
-            # print("href : " + href + "\n")
+            self.addons.append([nome, "http://www.curseforge.com{}".format(href)])
 
-        # stringlastpage = str(lastpage)
-        # print("Nbr page web : " + stringlastpage)
-        # fichier.write("Nbr page web : ")
-        # fichier.write(stringlastpage)
-        # fichier.write("\n")
         self.progress.emit(len(self.addons))
         self.addonsMutex.unlock()
         self.sem.release()
