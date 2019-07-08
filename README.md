@@ -1,13 +1,12 @@
 lcurse
 ======
 
-Version tout en français de "lcurse". Utilitaire en Python compatible linux de "curse".
+08/07/2019 Mises à jour catalogue et Addons sont fonctionnelles.
+Nouvelle structure du site https://www.curseforge.com/wow/addons
+
+### Version tout en français de "lcurse". Utilitaire en Python compatible linux de "curse".
 Branche principale et de référence du projet :
 https://github.com/ephraim/lcurse/
-
-Remarque : Il est possible d'utiliser l'installation par défaut de Python de son système sans créer un environnement "pipenv"
-Dans la fenêtre d'un terminal, utiliser la commande :
-~/lcurse-master/lcurse
 
 Étant donné que l'application considère que l'installation par défaut sera dans le répertoire " ~/.wine/drive_c/Program Files (x86)/World of Warcraft/ ", votre installation n’est peut être pas structuré de la même façon, vous devrez probablement créer un lien par « ln -s source destination » entre les deux dossiers wow/Interface/Addons.
 
@@ -15,33 +14,30 @@ Pour exemple dans mon cas personnel, installation wow via Lutris, j'ai créer un
 
 ln -s '/home/philmore/Games/battlenet/drive_c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns' '/home/philmore/.wine/drive_c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns'
 
-lcurse nowadays supports git repositories too.
-As git repos aren't structured the same, you will most probably need to create an link via "ln -s source destination" inside the wow/Interface/Addons folder.
-But at least the update is then done via the usuall lcurse way.
+lcurse supporte les dépôts git aussi.
+Comme les dépôts git ne sont pas structurés de façon identique, vous devrez probablement créer un nouveau lien via
+"ln -s source destination" à l'intérieur du répertoire wow/Interface/Addons folder.
+Mais au moins la mise à jour se fait alors par la voie habituelle.
 
-### Requirements
+### Pré-requis
 * python 3.6 ou 3.7
 * pipenv
 * PyQt5
 * bs4
 * lxml
 
-All requirements can be installed with:
+### Installation des pré-requis :
 ```bash
 pipenv install
 ```
-
-## Running
-
-Simply:
+### Lancement du programme
 ```bash
 pipenv run ./lcurse
 ```
+### Mode mise à jour addons, sans interface
 
-### Unattended mode
-
-You may also run `lcurse` in "unattended mode" once you have set it up. This
-will update all your addons and then exit. Use
+Vous pouvez lancer `lcurse` en "Mode sans surveillance" une fois que vous avez mis en place les réglages de base.
+Ceci mettra à jour tous vos addons et quittera.
 ```bash
 pipenv run ./lcurse --auto-update
 ```
