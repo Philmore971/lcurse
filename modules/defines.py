@@ -12,7 +12,7 @@ LCURSE_ADDON_TOCS_CACHE = LCURSE_FOLDER + "/tocs.json"
 LCURSE_MAXTHREADS_KEY = "Preferences/maxthreads"
 LCURSE_MAXTHREADS_DEFAULT = 50
 LCURSE_DBVERSION = 1
-TOC = "80100"
+TOC = "80200"
 print("Folders",WOW_FOLDER_KEY,WOW_FOLDER_DEFAULT)
 # with open(toc, encoding="utf8", errors='replace') as f:
 #     line = f.readline()
