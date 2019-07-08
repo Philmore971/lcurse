@@ -8,7 +8,9 @@ Nouvelle structure du site https://www.curseforge.com/wow/addons
 Branche principale et de référence du projet :
 https://github.com/ephraim/lcurse/
 
-Étant donné que l'application considère que l'installation par défaut sera dans le répertoire " ~/.wine/drive_c/Program Files (x86)/World of Warcraft/ ", votre installation n’est peut être pas structuré de la même façon, vous devrez probablement créer un lien par « ln -s source destination » entre les deux dossiers wow/Interface/Addons.
+Étant donné que l'application considère que l'installation par défaut est localisée dans le répertoire
+"~/.wine/drive_c/Program Files (x86)/World of Warcraft/ "
+votre installation n’est peut être pas structuré de la même façon, vous devrez probablement créer un lien par « ln -s source destination » entre les deux dossiers /Interface/Addons.
 
 Pour exemple dans mon cas personnel, installation wow via Lutris, j'ai créer un lien symbolique vers le dossier d'installation standard de Wow :
 
@@ -16,7 +18,7 @@ ln -s '/home/philmore/Games/battlenet/drive_c/Program Files (x86)/World of Warcr
 
 lcurse supporte les dépôts git aussi.
 Comme les dépôts git ne sont pas structurés de façon identique, vous devrez probablement créer un nouveau lien via
-"ln -s source destination" à l'intérieur du répertoire wow/Interface/Addons folder.
+"ln -s source destination" à l'intérieur du répertoire wow/Interface/Addons.
 Mais au moins la mise à jour se fait alors par la voie habituelle.
 
 ### Pré-requis
