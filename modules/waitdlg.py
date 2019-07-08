@@ -78,6 +78,7 @@ def OpenWithRetry(url):
 class CheckDlg(Qt.QDialog):
     checkFinished = Qt.pyqtSignal(Qt.QVariant, bool, Qt.QVariant)
     closeSignal = Qt.pyqtSignal()
+    print('Contrôle de la présence d\'un catalogue')
 
     def __init__(self, parent, addons):
         super(CheckDlg, self).__init__(parent)
@@ -117,10 +118,13 @@ class CheckDlg(Qt.QDialog):
         with self.progressMutex:
             if self.progressOrAborted < self.progress.maximum():
                 # if we aren't ready to close, the user pressed the close button - set the cancel flag so we can stop
+                # si nous ne sommes pas prêts à fermer, l’utilisateur a appuyé sur le bouton Fermer
+                # - définir l’indicateur d’annulation pour que nous puissions arrêter
                 self.cancelled = True
                 event.ignore()
 
     def startWorkerThreads(self):
+        print('Démarrage tâche (thread)')
         self.threads = []
         for addon in self.addons:
             self.sem.acquire()
@@ -133,10 +137,12 @@ class CheckDlg(Qt.QDialog):
                 self.onCancelOrFinish(False)
 
     def exec_(self):
+#        print('démarrage nouveau thread')
         start_new_thread(self.startWorkerThreads, ())
         super(CheckDlg, self).exec_()
 
     def onCancelOrFinish(self, updateProgress):
+#        print('Action terminée ou stoppée par l\'utilisateur')
         self.sem.release()
         shouldClose = False
         if updateProgress:
@@ -189,19 +195,27 @@ class CheckWorker(Qt.QThread):
             html = response.read()
             soup = BeautifulSoup(html, "lxml")
             beta=self.addon[4]
-            lis = soup.findAll("tr","project-file-list__item")
+#            lis = soup.findAll("tr","project-file-list__item")
+            lis = soup.findAll("tr")
             if lis:
-                versionIdx = 0
+#                versionIdx = 0
+                versionIdx = 1
                 isOk=False
                 while True:
-                    isOk= beta or lis[versionIdx].td.span.attrs['title']=='Release'
+#                    isOk= beta or lis[versionIdx].td.span.attrs['title']=='Release'
+                    isOk= beta or lis[versionIdx].td.div.span.string=='R'
                     if isOk:
                         break
                     versionIdx=versionIdx+1
                 row=lis[versionIdx]
-                version=row.find("span","table__content file__name").string
+#                version=row.find("span","table__content file__name").string
+                elem=row.find("a",attrs={"data-action":"file-link"})
+                version=elem.string
                 if str(self.addon[3]) != version:
-                    downloadLink="https://www.curseforge.com"+ row.find("a").attrs['href'] + '/file'
+                    addonid=elem.attrs['href'].split('/')[-1]
+                    addonname=elem.attrs['href'].split('/')[-3]
+#                    downloadLink="https://www.curseforge.com"+ row.find("a").attrs['href'] + '/file'
+                    downloadLink = "https://www.curseforge.com/wow/addons/" + addonname + "/download/" + addonid + "/file"
                     return (True, (version, downloadLink))
             return (False, ("", ""))
             
@@ -246,6 +260,7 @@ class UpdateDlg(Qt.QDialog):
 
     def startWorkerThreads(self):
         self.threads = []
+        print('Génération des tâches (threads)')
         for addon in self.addons:
             self.sem.acquire()
             thread = UpdateWorker(addon)
@@ -328,6 +343,7 @@ class UpdateWorker(Qt.QThread):
 
 class UpdateCatalogDlg(Qt.QDialog):
     updateCatalogFinished = Qt.pyqtSignal(Qt.QVariant)
+    print('Lecture catalogue')
 
     def __init__(self, parent):
         super(UpdateCatalogDlg, self).__init__(parent)
@@ -375,48 +391,81 @@ class UpdateCatalogWorker(Qt.QThread):
         self.maxThreads = int(settings.value(defines.LCURSE_MAXTHREADS_KEY, defines.LCURSE_MAXTHREADS_DEFAULT))
         self.sem = Qt.QSemaphore(self.maxThreads)
         self.lastpage = 1
+        print("Initialisation")
 
     def retrievePartialListOfAddons(self, page):
-        response = OpenWithRetry("http://www.curseforge.com/wow/addons?page={}".format(page))
+        # response va contenir la page de l'URL en cours, fonction du numéro de page
+        response = OpenWithRetry("https://www.curseforge.com/wow/addons?page={}".format(page))
+        # la variable soup va contenir la transformation de la page en un arbre hiérarchisé via l'analyseur XML
+        # Analyseur XML (analyseur = parser en anglais. lxml est l'analyseur le plus rapide) 
         soup = BeautifulSoup(response.read(), "lxml")
+
+        # Le nombre de page est contenu dans la ligne
+        # <a class="pagination-item" href="/wow/addons?page=345"><span class="text-primary-500">345</span></a>
+
+        # Traitement origine erreur serveur conservé
         # Curse returns a soft-500
-        if soup.find_all("h2", string="Erreur"):
+        if soup.find_all("h2", string="Error"):
             print("Erreur coté serveur pendant la création de la liste des addons.")
 
+        # Initialisation à la page 1
         lastpage = 1
+        # traitement particulier de la page 1 pour extraire le nombre de page à aspirer
         if page == 1:
-            pager = soup.select("ul.b-pagination-list.paging-list.j-tablesorter-pager.j-listing-pagination li")
+        # lignes origine
+#            pager = soup.select("ul.b-pagination-list.paging-list.j-tablesorter-pager.j-listing-pagination li")
+#            lastpage = int(pager[len(pager) - 2].contents[0].contents[0])
+
+        ####### Rechercher le nombre de page
+        # Variable pager contient tous les class="pagination-item"
+            pager = soup.select("a.pagination-item")
+        # Si la variable pager existe (n'est pas vide), extraire le nombre de page à lire pour construire le catalogue
             if pager:
-                lastpage = int(pager[len(pager) - 2].contents[0].contents[0])
-                # print("Nbr page web : ", lastpage)
-        projects = soup.select("li.project-list-item")  # li .title h4 a")
+            # ligne d'origine
+#                lastpage = int(pager[len(pager) - 2].contents[0].contents[0])
+
+            # extraction du deuxième élément de la liste -> indice 1, puisque que la prmière indexation est 0 -> attribut "href"
+            # on obtient une chaine de caractères
+                NbrPage = pager[len(pager)-1]["href"]
+                longueur=len(NbrPage)
+                position_egal = NbrPage.rfind("=")+1
+            # transtypage de la chaine resultante en entier après l'avoir découpée
+                lastpage = int(NbrPage[NbrPage.rfind("=")+1:len(NbrPage)])
+                print('Nbr de page à traiter : ', lastpage)
+
+        ####### Traitement d'extraction des informations des addons effectué sur chaque page (dont la page 1)
+
+        # ligne origine
+#        projects = soup.select("li.project-list-item")  # li .title h4 a")
+
+        # balise "a", attribut class="my-auto"
+        projects = soup.find_all("a", "my-auto")
+        NbrElementListe = len(projects)-1
         self.addonsMutex.lock()
-        # fichier = open("/home/philippe/.lcurse/suivi_lien.txt", "a")
+        for index, Element in enumerate(projects):
+            if (index % 2) == 0:
+                    nome=str(Element.text).strip()
+                    URL=str(Element.get('href').strip())
+                    href="https://www.curseforge.com{}".format(URL)
+                    self.addons.append([nome, href])
+            else:
+                    pass
 
-        for project in projects:
-            links=project.select("a.button--download")
-            texts=project.select("a h2")
-            for text in texts:
-                nome=text.string.replace('\\r','').replace('\\n','').strip()
-                break
-            for link in links:
-                href=link.get("href", link.get("data-normal-href")).replace("/download",'')
-            self.addons.append([nome, "http://www.curseforge.com{}".format(href)])
-
+        # Python Multithreading Lock objects
         self.progress.emit(len(self.addons))
         self.addonsMutex.unlock()
         self.sem.release()
-        # fichier.close()
         return lastpage
 
     def retrieveListOfAddons(self):
         page = 1
         lastpage = 1
+        print("Chercher liste des ADDONS")
         self.sem.acquire()
         lastpage = self.retrievePartialListOfAddons(page)
         page += 1
         self.retrievedLastpage.emit(lastpage)
-
+        # Tant que la page en cours de traitement est inférieure ou égal au nombre de page à extraire
         while page <= lastpage:
             self.sem.acquire()
             start_new_thread(self.retrievePartialListOfAddons, (page,))
@@ -424,8 +473,7 @@ class UpdateCatalogWorker(Qt.QThread):
 
     def run(self):
         self.retrieveListOfAddons()
-
         # wait until all worker are done
+        # attendre que tous les threads aient terminé
         self.sem.acquire(self.maxThreads)
-
         self.updateCatalogFinished.emit(self.addons)
