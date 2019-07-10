@@ -29,11 +29,13 @@ Mais au moins la mise à jour se fait alors par la voie habituelle.
 * lxml
 
 ### Installation des pré-requis :
-```bash
+```terminal bash
+cd chemin_vers/lcurse-master
 pipenv install
 ```
 ### Lancement du programme
-```bash
+```terminal bash
+cd chemin_vers/lcurse-master
 pipenv run ./lcurse
 ```
 ### Mode mise à jour addons, sans interface
