@@ -29,7 +29,7 @@ def loadTranslators():
         apptranslator.load(appTranslationFile)
         translations.append(apptranslator)
     else:
-        print("WARNING: gui translation file could not be found: {}".format(appTranslationFile))
+        print("AVERTISSEMENT : fichier de traduction non trouvé : {}".format(appTranslationFile))
 
     for translator in translations:
         app.installTranslator(translator)
