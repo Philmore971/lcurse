@@ -1,8 +1,9 @@
 lcurse
 ======
 
-08/07/2019 Mises à jour catalogue et Addons sont fonctionnelles.
-Nouvelle structure du site https://www.curseforge.com/wow/addons
+17/09/2019 Mises à jour catalogue et Addons sont fonctionnelles.
+Nouvelle structure du site https://www.curseforge.com/wow/addons 
+Détection des addons version 8.2 et "classic"
 
 ### Version tout en français de "lcurse". Utilitaire en Python compatible linux de "curse".
 Branche principale et de référence du projet :
@@ -22,7 +23,7 @@ Comme les dépôts git ne sont pas structurés de façon identique, vous devrez 
 Mais au moins la mise à jour se fait alors par la voie habituelle.
 
 ### Pré-requis
-* python 3.6 ou 3.7
+* python 3.7 (modifier le fichier Pipfile si version 3.6 souhaitée)
 * pipenv
 * PyQt5
 * bs4
