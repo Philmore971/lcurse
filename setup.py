@@ -3,10 +3,10 @@
 from distutils.core import setup
 
 setup(
-        name='lcurse',
-        version='2.0.0',
-        description='A Curse compatible client for Linux.',
-        url='https://github.com/ephraim/lcurse',
+        name='Lcurse-FR',
+        version='2.1.0',
+        description='Client Curse compatible pour Linux.',
+        url='https://github.com/Philmore971/lcurse',
         packages=['modules'],
         scripts=['lcurse', 'console.py'],
         license='Unlicense',
