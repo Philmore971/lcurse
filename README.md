@@ -1,4 +1,4 @@
-### VERSION OBSOLLÈTE.
+### VERSION OBSOLÈTE.
 Les apports et, ou traductions ont été intégrés à la branche principale et de référence du projet :
 https://github.com/ephraim/lcurse/
 
